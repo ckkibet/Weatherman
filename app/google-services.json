@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "551193006731",
+    "firebase_url": "https://zeweather-2a614.firebaseio.com",
+    "project_id": "zeweather-2a614",
+    "storage_bucket": "zeweather-2a614.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551193006731:android:cb5f0c7d4302123c593a8e",
+        "android_client_info": {
+          "package_name": "ckibet.tamarix.zeweather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551193006731-va0tg7knh2qkvp52k133o9mv81h35iql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB88_2VzsFvW7kmeBPonE_XuXm4slFIRZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551193006731-va0tg7knh2qkvp52k133o9mv81h35iql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
