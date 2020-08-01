@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -34,7 +35,9 @@ import java.util.List;
 
 public class Weather extends AppCompatActivity {
 
+
     private FirebaseAuth mAuth;
+    TextView temperature, description, city, wind,pressure, humidity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +105,7 @@ public class Weather extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
 
                         try {
-                            JSONArray jsonArray = response;
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            JSONObject jsonObject = response.getJSONObject(0);
                             String latitude = jsonObject.getString("lat");
                             String longitude = jsonObject.getString("lon");
 
@@ -131,18 +133,52 @@ public class Weather extends AppCompatActivity {
 
 
     private void apiRequest(String latitude, String longitude) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String longi = longitude;
-        String latit = latitude;
 
-        final String url = "https://fcc-weather-api.glitch.me/api/current?lat="+latit+"&"+"lon="+longi;
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        final String url = "https://fcc-weather-api.glitch.me/api/current?lat="+latitude+"&lon="+longitude;
+        System.out.println(url);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url,
                 null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(url);
 
+                RecentDataModel recentDataModel;
+                   try {
+                       JSONArray array = response.getJSONArray("weather");
+                       JSONObject jsonObject = array.getJSONObject(0);
+                       String description = jsonObject.getString("description");
+
+                       //returns city's name
+                       String city = response.getString("name");
+
+                       //returns temperature, feels_like, pressure and humidity
+                       JSONObject main = response.getJSONObject("main");
+                       Double temp = main.getDouble("temp");
+                       Double feels_like = main.getDouble("feels_like");
+                       Double pressure = main.getDouble("pressure");
+                       int humidity = main.getInt("humidity");
+
+                       //returns wind speed
+                       JSONObject wind_speed = response.getJSONObject("wind");
+                       Double speed = wind_speed.getDouble("speed");
+
+                       //returns country initials
+                       JSONObject sys = response.getJSONObject("sys");
+                       String country = sys.getString("country");
+
+                       recentDataModel = new RecentDataModel(-1, temp, feels_like, pressure, humidity, speed, country, description,  city);
+                       Toast.makeText(Weather.this, recentDataModel.toString(), Toast.LENGTH_SHORT).show();
+
+                       DBhelper dBhelper = new DBhelper(Weather.this);
+                       boolean success = dBhelper.addRecord(recentDataModel);
+
+                       Toast.makeText(Weather.this, "Success="+success, Toast.LENGTH_SHORT).show();
+
+                   } catch (JSONException e) {
+                       e.printStackTrace();
+                   }
             }
         }, new Response.ErrorListener()
         {
@@ -153,6 +189,12 @@ public class Weather extends AppCompatActivity {
         });
 
         queue.add(getRequest);
+
+    }
+
+    private void updateRecent(String description, String city, Double temp, Double feels_like, Double pressure, int humidity, Double speed, String contry) {
+
+
 
     }
 
