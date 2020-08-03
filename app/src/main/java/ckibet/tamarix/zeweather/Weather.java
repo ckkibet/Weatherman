@@ -1,11 +1,8 @@
 package ckibet.tamarix.zeweather;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -15,13 +12,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -29,23 +32,119 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class Weather extends AppCompatActivity {
 
 
     private FirebaseAuth mAuth;
-    TextView temperature, description, city, wind,pressure, humidity;
+    private TextView mIconWeatherView;
+    private TextView mTemperatureView;
+    private TextView mDescriptionView;
+    private TextView mHumidityView;
+    private TextView mWindSpeedView;
+    private TextView mPressureView;
+    private TextView mCloudinessView;
+    private TextView mLastUpdateView;
+    private TextView mSunriseView;
+    private TextView mSunsetView;
+    private TextView mIconWindView;
+    private TextView mIconHumidityView;
+    private TextView mIconPressureView;
+    private TextView mIconCloudinessView;
+    private TextView mIconSunriseView;
+    private TextView mIconSunsetView;
+    private String city, country;
+
+    private String mSpeedScale;
+    private String mIconWind;
+    private String mIconHumidity;
+    private String mIconPressure;
+    private String mIconCloudiness;
+    private String mIconSunrise;
+    private String mIconSunset;
+    private String mPercentSign;
+    private String mPressureMeasurement;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         mAuth = FirebaseAuth.getInstance();
+        setupActionbar();
+        weatherConditionsIcons();
+        initializeTextView();
+
     }
 
+    private void initializeTextView() {
+
+        final Typeface weatherFont = ResourcesCompat.getFont(this,
+                R.font.weathericonsregularwebfont);
+
+
+        final Typeface robotoThin = ResourcesCompat.getFont(this,
+                R.font.robotothin);
+
+
+        final Typeface robotoLight = ResourcesCompat.getFont(this,
+                R.font.robotolight);
+
+        mTemperatureView = findViewById(R.id.main_temperature);
+        mPressureView = findViewById(R.id.main_pressure);
+        mHumidityView = findViewById(R.id.main_humidity);
+        mWindSpeedView = findViewById(R.id.main_wind_speed);
+        mCloudinessView = findViewById(R.id.main_cloudiness);
+        mIconSunriseView = findViewById(R.id.main_sunrise);
+        mIconSunsetView = findViewById(R.id.main_sunset);
+
+        mTemperatureView.setTypeface(robotoThin);
+        mWindSpeedView.setTypeface(robotoLight);
+        mHumidityView.setTypeface(robotoLight);
+        mPressureView.setTypeface(robotoLight);
+        mCloudinessView.setTypeface(robotoLight);
+
+
+        /**
+         * Initialize and configure weather icons
+         */
+        mIconWindView = (TextView) findViewById(R.id.main_wind_icon);
+        mIconWindView.setTypeface(weatherFont);
+        mIconWindView.setText(mIconWind);
+        mIconHumidityView = (TextView) findViewById(R.id.main_humidity_icon);
+        mIconHumidityView.setTypeface(weatherFont);
+        mIconHumidityView.setText(mIconHumidity);
+        mIconPressureView = (TextView) findViewById(R.id.main_pressure_icon);
+        mIconPressureView.setTypeface(weatherFont);
+        mIconPressureView.setText(mIconPressure);
+        mIconSunriseView = (TextView) findViewById(R.id.main_sunrise_icon);
+        mIconSunriseView.setTypeface(weatherFont);
+        mIconSunriseView.setText(mIconSunrise);
+        mIconSunsetView = (TextView) findViewById(R.id.main_sunset_icon);
+        mIconSunsetView.setTypeface(weatherFont);
+        mIconSunsetView.setText(mIconSunset);
+
+    }
+
+    private void weatherConditionsIcons() {
+        mIconWind = getString(R.string.icon_wind);
+        mIconHumidity = getString(R.string.icon_humidity);
+        mIconPressure = getString(R.string.icon_barometer);
+        mIconCloudiness = getString(R.string.icon_cloudiness);
+        mPercentSign = getString(R.string.percent_sign);
+        mPressureMeasurement =getString(R.string.pressure_measurement);
+        mIconSunrise = getString(R.string.icon_sunrise);
+        mIconSunset = getString(R.string.icon_sunset);
+    }
+
+    private void setupActionbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
 
     @Override
@@ -151,7 +250,7 @@ public class Weather extends AppCompatActivity {
                        String description = jsonObject.getString("description");
 
                        //returns city's name
-                       String city = response.getString("name");
+                       city = response.getString("name");
 
                        //returns temperature, feels_like, pressure and humidity
                        JSONObject main = response.getJSONObject("main");
@@ -166,15 +265,29 @@ public class Weather extends AppCompatActivity {
 
                        //returns country initials
                        JSONObject sys = response.getJSONObject("sys");
-                       String country = sys.getString("country");
+                       country = sys.getString("country");
 
                        recentDataModel = new RecentDataModel(-1, temp, feels_like, pressure, humidity, speed, country, description,  city);
-                       Toast.makeText(Weather.this, recentDataModel.toString(), Toast.LENGTH_SHORT).show();
 
                        DBhelper dBhelper = new DBhelper(Weather.this);
                        boolean success = dBhelper.addRecord(recentDataModel);
 
-                       Toast.makeText(Weather.this, "Success="+success, Toast.LENGTH_SHORT).show();
+
+                       String temp_string = Double.toString(temp);
+                       mTemperatureView.setText(temp_string+"°C");
+
+                       mCloudinessView.setText(description);
+//                       m.setText(city);
+
+//                       wind,pressure, humidity;
+                       String weather_wind = Double.toString(speed);
+                       mWindSpeedView.setText("Wind: "+weather_wind + getString(R.string.meter_per_second));
+
+                       String weather_pressure = Double.toString(pressure);
+                       mPressureView.setText("Pressure: "+weather_pressure+"hPa");
+
+                       String weather_humidity = Double.toString(humidity);
+                       mHumidityView.setText("Humidity: "+weather_humidity+mPercentSign);
 
                    } catch (JSONException e) {
                        e.printStackTrace();
@@ -198,5 +311,10 @@ public class Weather extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);    }
 }
