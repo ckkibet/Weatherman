@@ -10,7 +10,4 @@
     <item
         android:id="@+id/log_out"
         android:title="@string/log_out" />
-    <item
-        android:id="@+id/forgot_password"
-        android:title="@string/forgot_password" />
 </menu>

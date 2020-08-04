@@ -175,16 +175,15 @@ public class Weather extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.forgot_password:
-                forgotPassword();
-                return true;
             case R.id.log_out:
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
+                return true;
             case R.id.app_bar_search:
                 inflateSearchDialog();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -250,9 +249,6 @@ public class Weather extends AppCompatActivity {
 
         location_queue.add(location_request);
 
-    }
-
-    private void forgotPassword() {
     }
 
 

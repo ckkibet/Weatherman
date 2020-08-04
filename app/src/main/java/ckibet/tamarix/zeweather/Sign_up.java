@@ -49,8 +49,7 @@ public class Sign_up extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 registerUser();
-                final ProgressDialog signupProgress = new ProgressDialog(Sign_up.this);
-                signupProgress.setMessage("Creating User");
+
             }
         });
 
@@ -80,16 +79,23 @@ public class Sign_up extends AppCompatActivity {
             return;
         }
 
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Creating User");
+        progressDialog.create();
+        progressDialog.show();
+
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
+                    progressDialog.dismiss();
                     Toast.makeText(Sign_up.this, "User Created!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }else  {
+                    progressDialog.dismiss();
                     Toast.makeText(Sign_up.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }

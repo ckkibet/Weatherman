@@ -57,6 +57,7 @@
     <string name="sunrise">Sunrise at %1$s</string>
     <string name="sunset">Sunset at %1$s</string>
     <string name="default_city">Nairobi, KE</string>
+    <string name="reset">Enter Your Email to reset Password</string>
 
 
 </resources>

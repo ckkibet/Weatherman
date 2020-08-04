@@ -37,7 +37,7 @@
             android:theme="@style/EditScreenTextInputLayoutStyle">
 
             <EditText
-                android:id="@+id/email_address"
+                android:id="@+id/login_email_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:drawablePadding="16dp"
@@ -57,7 +57,7 @@
             android:theme="@style/EditScreenTextInputLayoutStyle">
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:drawablePadding="16dp"
@@ -79,7 +79,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/sign_up"
+                android:id="@+id/login_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
