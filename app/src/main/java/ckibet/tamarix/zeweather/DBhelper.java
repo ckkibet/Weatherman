@@ -2,6 +2,7 @@ package ckibet.tamarix.zeweather;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -10,7 +11,7 @@ import androidx.annotation.Nullable;
 public class DBhelper extends SQLiteOpenHelper {
     public static final String RECENT_WEATHER = "RECENT_WEATHER";
     public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_HUMIDITY = "HUM" + COLUMN_ID + "ITY";
+    public static final String COLUMN_HUMIDITY = "HUMIDITY";
     public static final String COLUMN_TEMPERATURE = "TEMPERATURE";
     public static final String COLUMN_PRESSURE = "PRESSURE";
     public static final String COLUMN_SPEED = "SPEED";
@@ -63,4 +64,24 @@ public class DBhelper extends SQLiteOpenHelper {
         }else
         return true;
     }
-}
+
+    public int getMostRecent(int id) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        String q = "SELECT * FROM RECENT_WEATHER ORDER by id DESC LIMIT 1";
+        Cursor cursor = sqLiteDatabase.rawQuery(q, null);
+        if (cursor.moveToFirst()){
+
+            System.out.println(cursor);
+        }
+        else {
+
+        }
+
+        return id;
+    }
+
+
+    }
+
+

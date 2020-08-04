@@ -242,7 +242,7 @@ public class Weather extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Weather.this, "things are burning", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Weather.this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 }
@@ -302,7 +302,7 @@ public class Weather extends AppCompatActivity {
                        recentDataModel = new RecentDataModel(-1, temp, pressure, humidity, speed, country, description,  city);
 
                        DBhelper dBhelper = new DBhelper(Weather.this);
-                       boolean success = dBhelper.addRecord(recentDataModel);
+                       dBhelper.addRecord(recentDataModel);
 
 
                        mTemperatureView.setText(String.format(getResources().getString(R.string.temperature),
@@ -355,6 +355,7 @@ public class Weather extends AppCompatActivity {
                                sunset_output));
 
 
+
                    } catch (JSONException e) {
                        e.printStackTrace();
                    }
@@ -373,11 +374,6 @@ public class Weather extends AppCompatActivity {
 
     }
 
-    private void updateRecent(String description, String city, Double temp,  Double pressure, int humidity, Double speed, String contry) {
-
-
-
-    }
 
     @Override
     public void onBackPressed() {
