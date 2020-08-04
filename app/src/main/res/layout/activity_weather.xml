@@ -114,28 +114,10 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/main.feels_like_icon"
-                        style="@style/MainIcon"
-                        android:layout_width="32dp"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/main.feels_like"
-                        style="@style/MainConditions"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/MainLinearLayout"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
                         android:id="@+id/main.wind_icon"
                         style="@style/MainIcon"
                         android:layout_width="32dp"
-                        android:layout_height="10dp" />
+                        android:layout_height="32dp" />
 
                     <TextView
                         android:id="@+id/main.wind_speed"
@@ -159,7 +141,8 @@
                         android:id="@+id/main.humidity"
                         style="@style/MainConditions"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -177,7 +160,8 @@
                         android:id="@+id/main.pressure"
                         style="@style/MainConditions"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        />
                 </LinearLayout>
 
                 <View
@@ -203,7 +187,8 @@
                         android:id="@+id/main.sunrise"
                         style="@style/MainConditions"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -221,7 +206,7 @@
                         android:id="@+id/main.sunset"
                         style="@style/MainConditions"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

@@ -1,5 +1,6 @@
 package ckibet.tamarix.zeweather;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -32,38 +33,40 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
+
 
 public class Weather extends AppCompatActivity {
 
 
     private FirebaseAuth mAuth;
-    private TextView mIconWeatherView;
     private TextView mTemperatureView;
-    private TextView mDescriptionView;
     private TextView mHumidityView;
     private TextView mWindSpeedView;
     private TextView mPressureView;
     private TextView mCloudinessView;
-    private TextView mLastUpdateView;
     private TextView mSunriseView;
     private TextView mSunsetView;
     private TextView mIconWindView;
     private TextView mIconHumidityView;
     private TextView mIconPressureView;
-    private TextView mIconCloudinessView;
     private TextView mIconSunriseView;
     private TextView mIconSunsetView;
     private String city, country;
+    private long sunrise, sunset;
 
-    private String mSpeedScale;
     private String mIconWind;
     private String mIconHumidity;
     private String mIconPressure;
-    private String mIconCloudiness;
     private String mIconSunrise;
     private String mIconSunset;
-    private String mPercentSign;
-    private String mPressureMeasurement;
+
+    private Toolbar mToolbar;
+    private ActionBar mActionbar;
 
 
     @Override
@@ -71,11 +74,45 @@ public class Weather extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         mAuth = FirebaseAuth.getInstance();
-        setupActionbar();
+
+        mTemperatureView = findViewById(R.id.main_temperature);
+        mPressureView = findViewById(R.id.main_pressure);
+        mHumidityView = findViewById(R.id.main_humidity);
+        mWindSpeedView = findViewById(R.id.main_wind_speed);
+        mCloudinessView = findViewById(R.id.main_cloudiness);
+        mSunriseView = findViewById(R.id.main_sunrise);
+        mSunsetView = findViewById(R.id.main_sunset);
+        mIconSunsetView =  findViewById(R.id.main_sunset_icon);
+        mIconWindView =  findViewById(R.id.main_wind_icon);
+        mIconHumidityView =  findViewById(R.id.main_humidity_icon);
+        mIconPressureView =  findViewById(R.id.main_pressure_icon);
+        mIconSunriseView =  findViewById(R.id.main_sunrise_icon);
+        mToolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(mToolbar);
+        mActionbar = getSupportActionBar();
+
+        defaultWeather();
         weatherConditionsIcons();
         initializeTextView();
-
     }
+
+    private void defaultWeather() {
+
+        if (mActionbar != null){
+            mActionbar.setDisplayHomeAsUpEnabled(false);
+            mActionbar.setTitle(R.string.default_city);
+        }
+
+        mCloudinessView.setText(getString(R.string.desc));
+        mTemperatureView.setText(String.format(getResources().getString(R.string.temperature), 21.11, getResources().getString(R.string.degrees_celcuis)));
+        mWindSpeedView.setText(String.format(getResources().getString(R.string.wind), 7.73, getResources().getString(R.string.wind_speed_meters)));
+        mHumidityView.setText(String.format(getResources().getString(R.string.humidity), 15, getResources().getString(R.string.percent_sign)));
+        mPressureView.setText(String.format(getResources().getString(R.string.pressure), 1019.3, getResources().getString(R.string.pressure_measurement)));
+        mSunriseView.setText(String.format(getResources().getString(R.string.sunrise) , "06:36"));
+        mSunsetView.setText(String.format(getResources().getString(R.string.sunset) , "18:41"));
+    }
+
 
     private void initializeTextView() {
 
@@ -90,37 +127,31 @@ public class Weather extends AppCompatActivity {
         final Typeface robotoLight = ResourcesCompat.getFont(this,
                 R.font.robotolight);
 
-        mTemperatureView = findViewById(R.id.main_temperature);
-        mPressureView = findViewById(R.id.main_pressure);
-        mHumidityView = findViewById(R.id.main_humidity);
-        mWindSpeedView = findViewById(R.id.main_wind_speed);
-        mCloudinessView = findViewById(R.id.main_cloudiness);
-        mIconSunriseView = findViewById(R.id.main_sunrise);
-        mIconSunsetView = findViewById(R.id.main_sunset);
 
         mTemperatureView.setTypeface(robotoThin);
         mWindSpeedView.setTypeface(robotoLight);
         mHumidityView.setTypeface(robotoLight);
         mPressureView.setTypeface(robotoLight);
         mCloudinessView.setTypeface(robotoLight);
+        mSunriseView.setTypeface(robotoLight);;
+        mSunsetView.setTypeface(robotoLight);
 
 
         /**
          * Initialize and configure weather icons
          */
-        mIconWindView = (TextView) findViewById(R.id.main_wind_icon);
+
         mIconWindView.setTypeface(weatherFont);
         mIconWindView.setText(mIconWind);
-        mIconHumidityView = (TextView) findViewById(R.id.main_humidity_icon);
+
         mIconHumidityView.setTypeface(weatherFont);
         mIconHumidityView.setText(mIconHumidity);
-        mIconPressureView = (TextView) findViewById(R.id.main_pressure_icon);
+
         mIconPressureView.setTypeface(weatherFont);
         mIconPressureView.setText(mIconPressure);
-        mIconSunriseView = (TextView) findViewById(R.id.main_sunrise_icon);
+
         mIconSunriseView.setTypeface(weatherFont);
         mIconSunriseView.setText(mIconSunrise);
-        mIconSunsetView = (TextView) findViewById(R.id.main_sunset_icon);
         mIconSunsetView.setTypeface(weatherFont);
         mIconSunsetView.setText(mIconSunset);
 
@@ -130,20 +161,8 @@ public class Weather extends AppCompatActivity {
         mIconWind = getString(R.string.icon_wind);
         mIconHumidity = getString(R.string.icon_humidity);
         mIconPressure = getString(R.string.icon_barometer);
-        mIconCloudiness = getString(R.string.icon_cloudiness);
-        mPercentSign = getString(R.string.percent_sign);
-        mPressureMeasurement =getString(R.string.pressure_measurement);
         mIconSunrise = getString(R.string.icon_sunrise);
         mIconSunset = getString(R.string.icon_sunset);
-    }
-
-    private void setupActionbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
 
@@ -196,6 +215,9 @@ public class Weather extends AppCompatActivity {
 
         final String location_url = "https://us1.locationiq.com/v1/search.php?key=756c290bdfa6dd&q="+citys_name+"&format=json";
 
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Fetching Location Coordinates");
+        progressDialog.show();
         JsonArrayRequest location_request = new JsonArrayRequest(Request.Method.GET,
                 location_url,
                 null,
@@ -213,12 +235,15 @@ public class Weather extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    progressDialog.dismiss();
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(Weather.this, "things are burning", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 }
         );
@@ -234,6 +259,10 @@ public class Weather extends AppCompatActivity {
     private void apiRequest(String latitude, String longitude) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        final ProgressDialog anotherOne = new ProgressDialog(this);
+        anotherOne.setMessage("Fetching Weather Details");
+        anotherOne.show();
 
         final String url = "https://fcc-weather-api.glitch.me/api/current?lat="+latitude+"&lon="+longitude;
         System.out.println(url);
@@ -252,10 +281,9 @@ public class Weather extends AppCompatActivity {
                        //returns city's name
                        city = response.getString("name");
 
-                       //returns temperature, feels_like, pressure and humidity
+                       //returns temperature, pressure and humidity
                        JSONObject main = response.getJSONObject("main");
                        Double temp = main.getDouble("temp");
-                       Double feels_like = main.getDouble("feels_like");
                        Double pressure = main.getDouble("pressure");
                        int humidity = main.getInt("humidity");
 
@@ -266,38 +294,78 @@ public class Weather extends AppCompatActivity {
                        //returns country initials
                        JSONObject sys = response.getJSONObject("sys");
                        country = sys.getString("country");
+                       sunrise = sys.getLong("sunrise");
+                       sunset = sys.getLong("sunset");
 
-                       recentDataModel = new RecentDataModel(-1, temp, feels_like, pressure, humidity, speed, country, description,  city);
+
+
+                       recentDataModel = new RecentDataModel(-1, temp, pressure, humidity, speed, country, description,  city);
 
                        DBhelper dBhelper = new DBhelper(Weather.this);
                        boolean success = dBhelper.addRecord(recentDataModel);
 
 
-                       String temp_string = Double.toString(temp);
-                       mTemperatureView.setText(temp_string+"°C");
+                       mTemperatureView.setText(String.format(getResources().getString(R.string.temperature),
+                               temp,
+                               getResources().getString(R.string.degrees_celcuis )));
 
                        mCloudinessView.setText(description);
+
 //                       m.setText(city);
-
 //                       wind,pressure, humidity;
-                       String weather_wind = Double.toString(speed);
-                       mWindSpeedView.setText("Wind: "+weather_wind + getString(R.string.meter_per_second));
+                       mWindSpeedView.setText(String.format(getResources().getString(R.string.wind),
+                               speed,
+                               getResources().getString(R.string.wind_speed_meters)));
 
-                       String weather_pressure = Double.toString(pressure);
-                       mPressureView.setText("Pressure: "+weather_pressure+"hPa");
+                       mPressureView.setText(String.format(getResources().getString(R.string.pressure),
+                               pressure,
+                               getResources().getString(R.string.pressure_measurement)));
 
-                       String weather_humidity = Double.toString(humidity);
-                       mHumidityView.setText("Humidity: "+weather_humidity+mPercentSign);
+                       mHumidityView.setText(String.format(getResources().getString(R.string.humidity),
+                               humidity,
+                               getResources().getString(R.string.percent_sign)));
+
+                       if (mActionbar != null){
+                           mActionbar.setDisplayHomeAsUpEnabled(false);
+                           mActionbar.setTitle(city+", "+country);
+                       }
+
+                       DateTimeFormatter dtf =
+                               DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                       .withLocale(Locale.UK)
+                                       .withZone(ZoneId.systemDefault());
+
+
+                       Instant instant = Instant.ofEpochSecond(sunrise);
+                       String sunrise_output = dtf.format(instant);
+
+                       mSunriseView.setText(String.format(getResources().getString(R.string.sunset),
+                               sunrise_output));
+
+                       DateTimeFormatter dtf_sunset =
+                               DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+                                       .withLocale(Locale.UK)
+                                       .withZone(ZoneId.systemDefault());
+
+
+                       Instant isinstant = Instant.ofEpochSecond(sunset);
+                       String sunset_output = dtf_sunset.format(isinstant);
+
+                       mSunsetView.setText(String.format(getResources().getString(R.string.sunset),
+                               sunset_output));
+
 
                    } catch (JSONException e) {
                        e.printStackTrace();
                    }
+                   anotherOne.dismiss();
             }
         }, new Response.ErrorListener()
         {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error Response", "Error");
+                anotherOne.dismiss();
             }
         });
 
@@ -305,7 +373,7 @@ public class Weather extends AppCompatActivity {
 
     }
 
-    private void updateRecent(String description, String city, Double temp, Double feels_like, Double pressure, int humidity, Double speed, String contry) {
+    private void updateRecent(String description, String city, Double temp,  Double pressure, int humidity, Double speed, String contry) {
 
 
 
