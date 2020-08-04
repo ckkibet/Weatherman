@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/login" />
+            android:src="@drawable/background" />
 
     </FrameLayout>
 
@@ -24,10 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="10dp   "
         android:orientation="vertical"
         android:paddingLeft="32dp"
         android:paddingRight="32dp">
+
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -68,6 +69,30 @@
                 android:maxLines="1"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#96ffffff"
+            android:theme="@style/EditScreenTextInputLayoutStyle">
+
+            <EditText
+                android:id="@+id/repeat_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawablePadding="16dp"
+                android:drawableRight="@drawable/password"
+                android:fontFamily="@font/robotolight"
+                android:hint="Enter Password Again"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -91,35 +116,12 @@
                 android:textColor="#96ffffff"
                 android:textSize="16dp" />
 
-            <Button
-                android:id="@+id/sign_in"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:background="@drawable/buttonshapewhitebg"
-                android:fontFamily="@font/robotolight"
-                android:text="Sign in"
-                android:textAllCaps="false"
-                android:textColor="#96ffffff"
-                android:textSize="16dp"
-                android:textStyle="bold" />
 
 
         </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/forgot_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/robotolight"
-            android:text="Forgot Password?"
-            android:textAlignment="center"
-            android:textColor="#96ffffff"
-            android:textSize="16sp" />
 
 
     </LinearLayout>
-
 </RelativeLayout>
