@@ -1,4 +1,4 @@
-# This was a solution to a test below
+# This was a solution to a test described below
 
 ## You are required to create a basic app which will allow authenticated users to query weather data from the following service (https://fcc-weather-api.glitch.me//api/current).
   As a guideline, the app is expected to get the data from the service then store it in a database and then show the end user the results in android view. To get the weather         details a user will be required to enter the location's longitude and latitude and hit the search button to get the
