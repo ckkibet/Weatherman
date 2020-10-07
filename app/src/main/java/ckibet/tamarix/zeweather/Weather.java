@@ -232,7 +232,7 @@ public class Weather extends AppCompatActivity {
                             apiRequest(latitude, longitude);
 
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            System.out.println("Exception in getting location details" + e);
                         }
                     progressDialog.dismiss();
 
@@ -261,8 +261,7 @@ public class Weather extends AppCompatActivity {
         anotherOne.show();
 
         final String url = "https://fcc-weather-api.glitch.me/api/current?lat="+latitude+"&lon="+longitude;
-        System.out.println(url);
-
+        
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url,
                 null, new Response.Listener<JSONObject>() {
             @Override
@@ -307,8 +306,6 @@ public class Weather extends AppCompatActivity {
 
                        mCloudinessView.setText(description);
 
-//                       m.setText(city);
-//                       wind,pressure, humidity;
                        mWindSpeedView.setText(String.format(getResources().getString(R.string.wind),
                                speed,
                                getResources().getString(R.string.wind_speed_meters)));
@@ -353,7 +350,7 @@ public class Weather extends AppCompatActivity {
 
 
                    } catch (JSONException e) {
-                       e.printStackTrace();
+                       System.out.println("Exception in weather details" + e);
                    }
                    anotherOne.dismiss();
             }
